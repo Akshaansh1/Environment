@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f9f9f9;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(28) 1s infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        .typewriter:nth-child(1) {
+            animation-delay: 1s;
+        }
+
+        .typewriter:nth-child(2) {
+            animation-delay: 3s;
+        }
+
+        .typewriter:nth-child(3) {
+            animation-delay: 4s;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+            text-align: center; /* Center the input and button */
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 14px;
+            width: 200px; /* Adjust the width as needed */
+        }
+
+        .submit {
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #4CAF50; /* Green color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+
+        /* Styles for the heatmap container */
+        #heatmap {
+            margin-top: 20px;
+            text-align: center; /* Center the heatmap */
+            width: 50%; /* Set the width to 50% of the container */
+            float: left; /* Float the map to the left */
+        }
+
+        #measures {
+            margin-top: 20px;
+            text-align: left;
+            width: 50%; /* Set the width to 50% of the container */
+            float: right; /* Float the measures to the right */
+            padding: 0 20px; /* Add padding for better spacing */
+            background-color: rgba(255, 255, 255, 0.5); /* Light gray background color */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle elevation */
+        }
+
+        #measures h1 {
+            color: #333; /* Dark text color */
+        }
+
+        #measures ul {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #measures li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <p class="text-3xl text-white mt-6 ml-10 inline-block font-bold">
+            EcoVista
+        </p>
+
+        <a href="index.html"><nav
+                class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
+        <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">News</nav></a>
+
+        <div class="relative inline-block text-left dropdown">
+            <button
+                class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer focus:outline-none">
+                Learn
+            </button>
+            <div class="dropdown-content">
+                <a href="aqi.html" class="block hover:text-green-700 hover:font-bold w-48">Air-Quality Index</a>
+                <a href="#" class="block hover:text-green-700 hover:font-bold w-48">Water-Quality Index</a>
+            </div>
+        </div>
+
+        <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">About</nav></a>
+        <!-- Adjusted styles for the login button -->
+        <button
+            class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-xl text-white mt-6 ml-12 p-2 cursor-pointer w-32 h-12 border-none rounded-2xl inline-block"
+            onclick="redirectToLogin()">Login</button>
+    </header>
+
+    <div class="input-container">
+        <!-- Add input field for the country -->
+        <label for="countryInput">Enter Country:</label>
+        <input type="text" id="countryInput" placeholder="Enter country name">
+
+        <!-- Existing input field for the city -->
+        <label for="cityInput">Enter City:</label>
+        <input type="text" id="cityInput" placeholder="Enter city name">
+
+        <!-- Button to trigger the search -->
+        <button class="submit" onclick="getAirPollution()">Get Air Pollution Data</button>
+    </div>
+
+    <div id="heatmap"></div>
+
+    <div id="measures">
+        <h1>Measures to Reduce Air Pollution</h1>
+        <ul>
+            <li>Use public transportation or carpooling</li>
+            <li>Reduce energy consumption at home and use energy-efficient appliances</li>
+            <li>Avoid burning wood or trash outdoors</li>
+            <li>Plant trees and maintain green spaces</li>
+            <li>Promote and use renewable energy sources</li>
+        </ul>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const queryParams = new URLSearchParams(window.location.search);
+            const city = queryParams.get("city");
+
+            if (city) {
+                document.getElementById("cityInput").value = decodeURIComponent(city);
+                getAirPollution();
+            }
+        });
+
+        async function getAirPollution() {
+            const openWeatherAPIKey = "aa22fbdd743bed8919c5ce3dce8727d2";
+            const cityInput = document.getElementById("cityInput").value;
+            const countryInput = document.getElementById("countryInput").value;
+
+            const geoEndpoint = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput},${countryInput}&limit=5&appid=${openWeatherAPIKey}`;
+            const geoResponse = await fetch(geoEndpoint);
+            const locations = await geoResponse.json();
+
+            const firstLocation = locations[0];
+            const lat = firstLocation?.lat;
+            const lon = firstLocation?.lon;
+
+            if (lat && lon) {
+                const aqiEndpoint = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${openWeatherAPIKey}`;
+                const aqiResponse = await fetch(aqiEndpoint);
+                const aqiData = await aqiResponse.json();
+
+                const aqiValue = aqiData['list'][0]['main']['aqi'];
+                const aqiCategory = getAqiCategory(aqiValue);
+
+                // Assuming Plotly is used for the heatmap visualization
+                const heatmapDiv = document.getElementById('heatmap');
+                Plotly.newPlot(heatmapDiv, [{
+                    type: 'scattermapbox',
+                    lat: [lat],
+                    lon: [lon],
+                    mode: 'markers',
+                    marker: {
+                        size: 20,
+                        color: aqiValue,
+                        colorscale: 'Viridis',
+                        colorbar: {
+                            title: 'AQI',
+                            tickvals: [1, 2, 3, 4, 5],
+                            ticktext: ['Good', 'Fair', 'Moderate', 'Poor', 'Very Poor'],
+                        },
+                    },
+                }], {
+                    mapbox: {
+                        style: 'open-street-map',
+                        center: { lat, lon },
+                        zoom: 8,
+                    },
+                });
+            } else {
+                alert("Invalid city or country input. Please try again.");
+            }
+        }
+
+        function getAqiCategory(aqiValue) {
+            if (aqiValue == 1) return "Good";
+            if (aqiValue == 2) return "Fair";
+            if (aqiValue == 3) return "Moderate";
+            if (aqiValue == 4) return "Poor";
+            if (aqiValue == 5) return "Very Poor";
+            return "Unknown";
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+
+</html>

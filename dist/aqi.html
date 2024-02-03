@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,7 @@
             display: none;
             position: absolute;
             background-color: #fff;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             z-index: 1;
         }
 
@@ -30,19 +31,41 @@
         .dropdown-content a:hover {
             background-color: #f9f9f9;
         }
+
+        #airQualityContainer {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #whatsNextLink {
+            margin-left: 20px;
+            font-size: 16px;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline-block;
+        }
     </style>
 </head>
+
 <body>
     <header>
         <p class="text-3xl text-white mt-6 ml-10 inline-block font-bold">
             EcoVista
         </p>
-        
-        <a href = "index.html"><nav class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
+
+        <a href="index.html"><nav
+                class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
         <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">News</nav></a>
-        
+
         <div class="relative inline-block text-left dropdown">
-            <button class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer focus:outline-none">
+            <button
+                class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer focus:outline-none">
                 Learn
             </button>
             <div class="dropdown-content">
@@ -50,27 +73,58 @@
                 <a href="#" class="block hover:text-green-700 hover:font-bold w-48">Water-Quality Index</a>
             </div>
         </div>
-        
+
         <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">About</nav></a>
-        <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-xl text-white mt-6 ml-12 p-2 cursor-pointer w-32 h-12 border-none rounded-2xl"
-                onclick="redirectToLogin()">Login</button>
+        <button
+            class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-xl text-white mt-6 ml-12 p-2 cursor-pointer w-32 h-12 border-none rounded-2xl inline-block"
+            onclick="redirectToLogin()">Login</button>
     </header>
 
     <div style="display: flex; align-items: center;">
-        <input type="text" style="margin-top: 50px; margin-left: 15px; width: 300px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.6); color: black; font-weight: bold; font-size: 20px;" id="cityInput" placeholder="Enter A City">
-        <button onclick="getAirPollution()" style="margin-top: 50px; height: 50px; margin-left: -20px; border: none; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; cursor: pointer;" class="transition ease-in-out delay-150 bg-lime-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500">
+        <!-- Add input field for the country -->
+        <input type="text"
+            style="margin-top: 50px; margin-left: 15px; width: 200px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.9); color: black; font-weight: bold; font-size: 16px;"
+            id="countryInput" placeholder="Enter A Country">
+
+        <!-- Existing input field for the city -->
+        <input type="text"
+            style="margin-top: 50px; margin-left: 15px; width: 200px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.9); color: black; font-weight: bold; font-size: 16px;"
+            id="cityInput" placeholder="Enter A City">
+
+        <button onclick="getAirPollution()"
+            style="margin-top: 50px; height: 50px; margin-left: -20px; border: none; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; cursor: pointer;"
+            class="transition ease-in-out delay-150 bg-lime-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500">
             Search
         </button>
     </div>
 
-    <div id="componentsGraph" style="margin-top: 20px;"></div>
+    <div id="airQualityContainer">
+        <div id="airQualityInfo"></div>
+    </div>
+
+    <div id="componentsGraph"></div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const queryParams = new URLSearchParams(window.location.search);
+            const city = queryParams.get("city");
+            const country = queryParams.get("country");
+
+            if (city) {
+                document.getElementById("cityInput").value = decodeURIComponent(city);
+            }
+
+            if (country) {
+                document.getElementById("countryInput").value = decodeURIComponent(country);
+            }
+        });
+
         async function getAirPollution() {
             const openWeatherAPIKey = "aa22fbdd743bed8919c5ce3dce8727d2";
             const cityInput = document.getElementById("cityInput").value;
+            const countryInput = document.getElementById("countryInput").value;
 
-            const geoEndpoint = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${openWeatherAPIKey}`;
+            const geoEndpoint = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput},${countryInput}&limit=5&appid=${openWeatherAPIKey}`;
             const geoResponse = await fetch(geoEndpoint);
             const locations = await geoResponse.json();
 
@@ -83,49 +137,80 @@
                 const aqiResponse = await fetch(aqiEndpoint);
                 const aqiData = await aqiResponse.json();
 
+                // Display air quality info
+                displayAirQualityInfo(aqiData['list'][0]['main']['aqi']);
+
                 // Display air components graph
                 displayAirComponentsGraph(aqiData['list'][0]['components']);
 
                 // You can add more visualization or data display here
             } else {
-                alert("Invalid city input. Please try again.");
+                alert("Invalid city or country input. Please try again.");
             }
         }
 
+        function displayAirQualityInfo(aqiValue) {
+            const airQualityContainerDiv = document.getElementById('airQualityContainer');
+            let airQualityText = '';
+            let backgroundColor = '';
+
+            if (aqiValue == 1) {
+                airQualityText = 'Air Quality: Good';
+                backgroundColor = 'lightgreen';
+            } else if (aqiValue == 2) {
+                airQualityText = 'Air Quality: Fair';
+                backgroundColor = 'lightyellow';
+            } else if (aqiValue == 3) {
+                airQualityText = 'Air Quality: Moderate';
+                backgroundColor = 'orange';
+            } else if (aqiValue == 4) {
+                airQualityText = 'Air Quality: Poor';
+                backgroundColor = 'lightcoral';
+            } else if (aqiValue == 5) {
+                airQualityText = 'Air Quality: Very Poor';
+                backgroundColor = 'purple';
+            } else {
+                airQualityText = 'Air Quality: Unknown';
+                backgroundColor = 'lightgray';
+            }
+
+            airQualityContainerDiv.innerHTML = airQualityText;
+            airQualityContainerDiv.style.backgroundColor = backgroundColor;
+        }
+
         function displayAirComponentsGraph(components) {
-    const componentsGraphDiv = document.getElementById('componentsGraph');
-    const componentNames = Object.keys(components);
-    const componentValues = Object.values(components);
+            const componentsGraphDiv = document.getElementById('componentsGraph');
+            const componentNames = Object.keys(components);
+            const componentValues = Object.values(components);
 
-    Plotly.newPlot(componentsGraphDiv, [{
-        type: 'bar',
-        x: componentNames,
-        y: componentValues,
-        marker: {
-            color: 'rgba(0, 123, 255, 0.6)',
-            line: {
-                color: 'rgba(0, 123, 255, 1.0)',
-                width: 2,
-            },
-        },
-    }], {
-        title: 'Air Components',
-        xaxis: {
-            title: 'Components',
-        },
-        yaxis: {
-            title: 'Concentration (µg/m³)',
-        },
-        paper_bgcolor: 'rgba(255, 255, 255, 0.6)', 
-        
-    });
-}
-
-
+            Plotly.newPlot(componentsGraphDiv, [{
+                type: 'bar',
+                x: componentNames,
+                y: componentValues,
+                marker: {
+                    color: 'rgba(0, 123, 255, 0.6)',
+                    line: {
+                        color: 'rgba(0, 123, 255, 1.0)',
+                        width: 2,
+                    },
+                },
+            }], {
+                title: 'Air Components',
+                xaxis: {
+                    title: 'Components',
+                },
+                yaxis: {
+                    title: 'Concentration (µg/m³)',
+                },
+                paper_bgcolor: 'rgba(255, 255, 255, 0.6)',
+                displayModeBar: false,
+            });
+        }
 
         function redirectToLogin() {
             window.location.href = 'login.html';
         }
     </script>
 </body>
+
 </html>
