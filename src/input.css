@@ -1,0 +1,14 @@
+/* output.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+
+html {
+  @apply bg-cover flex place-items-center justify-center;
+  background-image: url('https://i.pinimg.com/originals/76/aa/24/76aa24bf1e433a13444c18c5df7b839b.gif');
+  background-position: center top 10%; /* Adjust the position as needed */
+}
+
+/* The rest of your Tailwind CSS styles... */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
