@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <p class="text-3xl text-white mt-6 ml-10 inline-block font-bold">
+            EcoVista
+        </p>
+        
+        <a><nav class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
+        <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">News</nav></a>
+        
+        <div class="relative inline-block text-left dropdown">
+            <button class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer focus:outline-none">
+                Learn
+            </button>
+            <div class="dropdown-content">
+                <a href="#" class="block hover:text-green-700 hover:font-bold w-48">Air-Quality Index</a>
+                <a href="#" class="block hover:text-green-700 hover:font-bold w-48">Water-Quality Index</a>
+            </div>
+        </div>
+        
+        <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">About</nav></a>
+        <!-- Adjusted styles for the login button -->
+        <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-xl text-white mt-6 ml-12 p-2 cursor-pointer w-32 h-12 border-none rounded-2xl"
+                onclick="redirectToLogin()">Login</button>
+    </header>
+
+
+    <div style="display: flex; align-items: center;">
+        <input type="text" style="margin-top: 50px; margin-left: 15px; width: 300px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.6); color: black; font-weight: bold; font-size: 20px;" placeholder="Enter A City">
+        <button style="margin-top: 50px; height: 50px; margin-left: -20px; border: none; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; cursor: pointer;" class="transition ease-in-out delay-150 bg-lime-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500">
+            Search
+        </button>
+    </div>
+
+    
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="fixed top-28 right-16 mb-9 h-full w-5/12 bg-white bg-opacity-40 rounded-xl">
+    <!-- Add your content inside the translucent block -->
+</div>
+
+
+</body>
+</html>
+
+    
+    
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
