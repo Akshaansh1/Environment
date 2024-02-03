@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./output.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Single+Day&display=swap');
 
@@ -37,7 +38,7 @@
             EcoVista
         </p>
         
-        <a><nav class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
+        <a href = "index.html"><nav class="text-xl text-white font-bold mt-6 ml-96 inline-block hover:text-2xl cursor-pointer">Home</nav></a>
         <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">News</nav></a>
         
         <div class="relative inline-block text-left dropdown">
@@ -51,41 +52,77 @@
         </div>
         
         <a><nav class="text-xl text-white font-bold mt-6 ml-16 inline-block hover:text-2xl cursor-pointer">About</nav></a>
-        <!-- Adjusted styles for the login button -->
         <button class="transition ease-in-out delay-150 bg-blue-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 duration-300 text-xl text-white mt-6 ml-12 p-2 cursor-pointer w-32 h-12 border-none rounded-2xl"
                 onclick="redirectToLogin()">Login</button>
     </header>
 
-
     <div style="display: flex; align-items: center;">
-        <input type="text" style="margin-top: 50px; margin-left: 15px; width: 300px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.6); color: black; font-weight: bold; font-size: 20px;" placeholder="Enter A City">
-        <button style="margin-top: 50px; height: 50px; margin-left: -20px; border: none; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; cursor: pointer;" class="transition ease-in-out delay-150 bg-lime-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500">
+        <input type="text" style="margin-top: 50px; margin-left: 15px; width: 300px; height: 50px; padding-left: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.6); color: black; font-weight: bold; font-size: 20px;" id="cityInput" placeholder="Enter A City">
+        <button onclick="getAirPollution()" style="margin-top: 50px; height: 50px; margin-left: -20px; border: none; border-radius: 0 20px 20px 0; background-color: #4CAF50; color: white; cursor: pointer;" class="transition ease-in-out delay-150 bg-lime-500 hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500">
             Search
         </button>
     </div>
 
-    
+    <div id="componentsGraph" style="margin-top: 20px;"></div>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body>
-
-<div class="fixed top-28 right-16 mb-9 h-full w-5/12 bg-white bg-opacity-40 rounded-xl">
-    <!-- Add your content inside the translucent block -->
-</div>
-
-
-</body>
-</html>
-
-    
-    
     <script>
+        async function getAirPollution() {
+            const openWeatherAPIKey = "aa22fbdd743bed8919c5ce3dce8727d2";
+            const cityInput = document.getElementById("cityInput").value;
+
+            const geoEndpoint = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=5&appid=${openWeatherAPIKey}`;
+            const geoResponse = await fetch(geoEndpoint);
+            const locations = await geoResponse.json();
+
+            const firstLocation = locations[0];
+            const lat = firstLocation?.lat;
+            const lon = firstLocation?.lon;
+
+            if (lat && lon) {
+                const aqiEndpoint = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${openWeatherAPIKey}`;
+                const aqiResponse = await fetch(aqiEndpoint);
+                const aqiData = await aqiResponse.json();
+
+                // Display air components graph
+                displayAirComponentsGraph(aqiData['list'][0]['components']);
+
+                // You can add more visualization or data display here
+            } else {
+                alert("Invalid city input. Please try again.");
+            }
+        }
+
+        function displayAirComponentsGraph(components) {
+    const componentsGraphDiv = document.getElementById('componentsGraph');
+    const componentNames = Object.keys(components);
+    const componentValues = Object.values(components);
+
+    Plotly.newPlot(componentsGraphDiv, [{
+        type: 'bar',
+        x: componentNames,
+        y: componentValues,
+        marker: {
+            color: 'rgba(0, 123, 255, 0.6)',
+            line: {
+                color: 'rgba(0, 123, 255, 1.0)',
+                width: 2,
+            },
+        },
+    }], {
+        title: 'Air Components',
+        xaxis: {
+            title: 'Components',
+        },
+        yaxis: {
+            title: 'Concentration (µg/m³)',
+        },
+        paper_bgcolor: 'rgba(255, 255, 255, 0.6)', 
+        
+    });
+}
+
+
+
         function redirectToLogin() {
             window.location.href = 'login.html';
         }
